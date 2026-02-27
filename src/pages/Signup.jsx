@@ -4,13 +4,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, LogIn } from 'lucide-react';
+import axios from 'axios';
 
 const signupSchema = z
     .object({
         name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
         email: z.string().email({ message: 'Invalid email address' }),
         password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
-        confirmPassword: z.string().min(6, { message: 'Confirm password must be at least 6 characters' }),
     })
     .refine((data) => data.password === data.confirmPassword, {
         message: "Passwords don't match",
@@ -32,6 +32,19 @@ export default function Signup() {
 
     const onSubmit = async (data) => {
         setLoading(true);
+        try {
+            let response = await axios.post("http://localhost:3000/auth/signup",data,{
+                headers:{
+                    "Content-Type":"application/json"
+                }
+            })
+             console.log("Login Response:", response.data);
+            
+        } catch (error) {
+            console.log(error);
+            
+            
+        }
         // Simulate API call
         setTimeout(() => {
             console.log('Signup Data:', data);
@@ -96,7 +109,7 @@ export default function Signup() {
                         {errors.password && <span className="text-red-500 text-xs ml-1 animate-pulse">{errors.password.message}</span>}
                     </div>
 
-                    <div className="flex flex-col gap-2">
+                    {/* <div className="flex flex-col gap-2">
                         <label htmlFor="confirmPassword" className="text-sm font-medium text-slate-50 ml-1">Confirm Password</label>
                         <div className="relative flex items-center group">
                             <Lock className="absolute left-4 text-slate-400 pointer-events-none transition-colors duration-300 group-focus-within:text-indigo-500" size={20} />
@@ -111,7 +124,7 @@ export default function Signup() {
                         {errors.confirmPassword && (
                             <span className="text-red-500 text-xs ml-1 animate-pulse">{errors.confirmPassword.message}</span>
                         )}
-                    </div>
+                    </div> */}
 
                     <button type="submit" className="w-full p-3.5 rounded-xl bg-indigo-500 text-white font-semibold text-base flex justify-center items-center gap-2 transition-all duration-300 mt-2 hover:bg-indigo-600 hover:-translate-y-0.5 hover:shadow-[0_10px_15px_-3px_rgba(99,102,241,0.3)] disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none" disabled={loading}>
                         {loading ? <span className="w-5 h-5 border-2 border-white/30 rounded-full border-t-white animate-spin"></span> : <><LogIn size={20} /> Sign Up</>}
