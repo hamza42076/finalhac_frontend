@@ -12,10 +12,10 @@ const signupSchema = z
         email: z.string().email({ message: 'Invalid email address' }),
         password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
     })
-    .refine((data) => data.password === data.confirmPassword, {
-        message: "Passwords don't match",
-        path: ['confirmPassword'],
-    });
+    // .refine((data) => data.password === data.confirmPassword, {
+    //     message: "Passwords don't match",
+    //     path: ['confirmPassword'],
+    // });
 
 export default function Signup() {
     const navigate = useNavigate();
@@ -31,29 +31,33 @@ export default function Signup() {
     });
 
     const onSubmit = async (data) => {
-        setLoading(true);
-        try {
-            let response = await axios.post("http://localhost:3000/auth/signup",data,{
-                headers:{
-                    "Content-Type":"application/json"
-                }
-            })
-             console.log("Login Response:", response.data);
-            
-        } catch (error) {
-            console.log(error);
-            
-            
-        }
-        // Simulate API call
-        setTimeout(() => {
-            console.log('Signup Data:', data);
-            reset();
-            setLoading(false);
-            alert('Account created successfully!');
-            navigate('/login');
-        }, 15000);
-    };
+    setLoading(true);
+
+    try {
+        const response = await axios.post(
+            "http://localhost:3000/auth/signup",
+            data,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        console.log("Signup Response:", response.data);
+
+        alert("Account created successfully!");
+        reset();
+        navigate("/login");
+
+    } catch (error) {
+        console.log(error);
+        alert(error.response?.data?.message || "Something went wrong");
+    } finally {
+        // Yeh hamesha chalega (success ya error dono me)
+        setLoading(false);
+    }
+};
 
     return (
         <div className="w-full min-h-screen p-4 flex items-center justify-center bg-slate-900 text-slate-50 font-sans" style={{ backgroundImage: 'radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.15) 0px, transparent 50%)' }}>

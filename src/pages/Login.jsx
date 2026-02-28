@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, LogIn } from 'lucide-react';
+import axios from 'axios';
 
 const loginSchema = z.object({
     email: z.string().email({ message: 'Invalid email address' }),
@@ -25,13 +26,23 @@ export default function Login() {
 
     const onSubmit = async (data) => {
         setLoading(true);
-        // Simulate API call
-        setTimeout(() => {
-            console.log('Login Data:', data);
+
+        try {
+            let response = await axios.post("http://localhost:3000/auth/login", data, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            console.log("Login Response:", response.data);
+
+        } catch (error) {
+            console.log(error);
+            alert(error.response?.data?.message || "Something went wrong");
+        }
+        finally {
             setLoading(false);
-            reset();
-            navigate('/dashboard');
-            }, 1500);
+        }
+
     };
 
     return (
