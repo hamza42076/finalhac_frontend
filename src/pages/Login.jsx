@@ -14,6 +14,7 @@ const loginSchema = z.object({
 });
 
 export default function Login() {
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;   
     const {fetchUser} = useAuthStore();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
@@ -31,9 +32,11 @@ export default function Login() {
         setLoading(true);
 
         try {
-            let response = await axios.post("http://localhost:3000/auth/login", data, {
+            let response = await axios.post(`${BACKEND_URL}/auth/login`, data, {
                 headers: {
                     "Content-Type": "application/json"
+                    
+                    
                 }
             })
             console.log("Login Response:", response.data.data);

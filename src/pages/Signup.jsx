@@ -18,6 +18,7 @@ const signupSchema = z
     // });
 
 export default function Signup() {
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
     const {fetchUser} = useAuthStore();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
@@ -36,11 +37,12 @@ export default function Signup() {
 
     try {
         const response = await axios.post(
-            "http://localhost:3000/auth/signup",
+            `${BACKEND_URL}/auth/signup`,
             data,
             {
                 headers: {
                     "Content-Type": "application/json",
+                    
                 },
             }
         );
