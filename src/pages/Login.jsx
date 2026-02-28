@@ -5,6 +5,8 @@ import * as z from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, LogIn } from 'lucide-react';
 import axios from 'axios';
+import Cookies from 'js-cookie';
+import useAuthStore from '../Store/authStore';
 
 const loginSchema = z.object({
     email: z.string().email({ message: 'Invalid email address' }),
@@ -12,6 +14,7 @@ const loginSchema = z.object({
 });
 
 export default function Login() {
+    const {fetchUser} = useAuthStore();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
@@ -33,7 +36,10 @@ export default function Login() {
                     "Content-Type": "application/json"
                 }
             })
-            console.log("Login Response:", response.data);
+            console.log("Login Response:", response.data.data);
+            Cookies.set("token", response.data.data.token);
+            fetchUser();
+            navigate("/");  
 
         } catch (error) {
             console.log(error);

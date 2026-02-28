@@ -14,9 +14,9 @@ const useAuthStore = create((set) => ({
                     "Authorization":`Bearer ${token}`
                 }
             });
-               console.log("userData from authstore" , response.data);
-               useAuthStore.setState({user:response.data.user,loading:false});
-               
+               console.log("userData from authstore" , response.data.data);
+               useAuthStore.setState({user:response.data.data,loading:false});
+
             }
             else{
             useAuthStore.setState({user:null,loading:false});
@@ -29,3 +29,4 @@ const useAuthStore = create((set) => ({
     }
     
 }));
+export default useAuthStore;

@@ -5,7 +5,7 @@ import * as z from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, LogIn } from 'lucide-react';
 import axios from 'axios';
-
+import useAuthStore from '../Store/authStore.js';
 const signupSchema = z
     .object({
         name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
@@ -18,6 +18,7 @@ const signupSchema = z
     // });
 
 export default function Signup() {
+    const {fetchUser} = useAuthStore();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
@@ -45,10 +46,12 @@ export default function Signup() {
         );
 
         console.log("Signup Response:", response.data);
+        Cookies.set("token", response.data.data.token);
+        fetchUser();
 
         alert("Account created successfully!");
         reset();
-        navigate("/login");
+        navigate("/");
 
     } catch (error) {
         console.log(error);
